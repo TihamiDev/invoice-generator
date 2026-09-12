@@ -1,0 +1,299 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background: #f4f5f7;
+    color: #222;
+}
+
+.app {
+    width: min(1400px, 95%);
+    margin: 30px auto 60px;
+}
+
+
+/* HEADER */
+
+.app-header {
+    margin-bottom: 25px;
+}
+
+.app-header h1 {
+    font-size: 30px;
+    margin-bottom: 6px;
+}
+
+.app-header p {
+    color: #666;
+    font-size: 14px;
+}
+
+
+/* FORM SECTIONS */
+
+.form-section {
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 24px;
+    margin-bottom: 20px;
+}
+
+.form-section h2 {
+    font-size: 19px;
+    margin-bottom: 20px;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+
+/* FIELDS */
+
+.field {
+    margin-bottom: 18px;
+}
+
+.field:last-child {
+    margin-bottom: 0;
+}
+
+.field label {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 7px;
+}
+
+input,
+textarea {
+    width: 100%;
+    border: 1px solid #cfcfcf;
+    border-radius: 5px;
+    padding: 10px 11px;
+    font-size: 14px;
+    outline: none;
+    background: white;
+}
+
+input:focus,
+textarea:focus {
+    border-color: #555;
+}
+
+textarea {
+    resize: vertical;
+}
+
+
+/* TAX OPTIONS */
+
+.tax-options {
+    display: flex;
+    gap: 15px;
+}
+
+.tax-option {
+    flex: 1;
+    border: 1px solid #d5d5d5;
+    border-radius: 7px;
+    padding: 15px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.tax-option:hover {
+    border-color: #888;
+}
+
+.tax-option input {
+    width: auto;
+    margin-bottom: 5px;
+}
+
+.tax-option span {
+    font-weight: 700;
+    font-size: 17px;
+}
+
+.tax-option small {
+    color: #666;
+    font-size: 12px;
+}
+
+
+/* SECTION HEADING */
+
+.section-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.section-heading h2 {
+    margin-bottom: 5px;
+}
+
+.section-heading p {
+    color: #777;
+    font-size: 13px;
+}
+
+
+/* PRODUCT TABLE */
+
+.product-table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.product-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 1000px;
+}
+
+.product-table th {
+    background: #f5f5f5;
+    border: 1px solid #ccc;
+    padding: 11px 8px;
+    font-size: 12px;
+    text-align: center;
+    white-space: nowrap;
+}
+
+.product-table td {
+    border: 1px solid #ccc;
+    padding: 7px;
+    text-align: center;
+}
+
+.product-table td input {
+    border: none;
+    padding: 8px 5px;
+    text-align: center;
+    border-radius: 0;
+}
+
+.product-table td input:focus {
+    outline: 1px solid #888;
+}
+
+.serial-column {
+    width: 55px;
+}
+
+.serial {
+    width: 55px;
+    font-weight: 600;
+}
+
+.amount {
+    min-width: 110px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+
+/* BUTTONS */
+
+.btn {
+    border: none;
+    border-radius: 5px;
+    padding: 11px 18px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.btn-primary {
+    background: #222;
+    color: white;
+}
+
+.btn-primary:hover {
+    background: #000;
+}
+
+.btn-secondary {
+    background: #eee;
+    color: #222;
+}
+
+.btn-secondary:hover {
+    background: #ddd;
+}
+
+.remove-product {
+    border: none;
+    background: transparent;
+    color: #d33;
+    font-size: 22px;
+    cursor: pointer;
+    line-height: 1;
+}
+
+
+/* ACTIONS */
+
+.actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 10px;
+}
+
+#generateInvoiceBtn {
+    min-width: 190px;
+}
+
+
+/* MOBILE */
+
+@media (max-width: 700px) {
+
+    .app {
+        width: 94%;
+        margin-top: 15px;
+    }
+
+    .form-section {
+        padding: 17px;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr;
+        gap: 0;
+    }
+
+    .tax-options {
+        flex-direction: column;
+    }
+
+    .section-heading {
+        align-items: flex-start;
+        gap: 15px;
+        flex-direction: column;
+    }
+
+    .btn {
+        width: 100%;
+    }
+
+    .actions {
+        justify-content: stretch;
+    }
+
+    #generateInvoiceBtn {
+        width: 100%;
+    }
+}
