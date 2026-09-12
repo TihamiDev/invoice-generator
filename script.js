@@ -12,10 +12,53 @@ document.addEventListener("DOMContentLoaded", () => {
     const editCustomerBtn =
         document.getElementById("editCustomerBtn");
 
+    const notificationCard =
+        document.getElementById("notificationCard");
 
-    // -----------------------------------------
-    // DEFAULT DATE
-    // -----------------------------------------
+    const notificationIcon =
+        document.getElementById("notificationIcon");
+
+    const notificationTitle =
+        document.getElementById("notificationTitle");
+
+    const notificationMessage =
+        document.getElementById("notificationMessage");
+
+    const notificationClose =
+        document.getElementById("notificationClose");
+
+    let notificationTimer = null;
+
+    function showNotification(message, type = "error", title = "Error") {
+        if (!notificationCard) {
+            console.error(message);
+            return;
+        }
+
+        clearTimeout(notificationTimer);
+
+        notificationCard.classList.remove("success", "error");
+        notificationCard.classList.add(type);
+
+        notificationIcon.textContent =
+            type === "success" ? "✓" : "×";
+
+        notificationTitle.textContent = title;
+        notificationMessage.textContent = message;
+
+        notificationCard.classList.add("show");
+
+        notificationTimer = setTimeout(() => {
+            notificationCard.classList.remove("show");
+        }, 4000);
+    }
+
+    if (notificationClose) {
+        notificationClose.addEventListener("click", () => {
+            clearTimeout(notificationTimer);
+            notificationCard.classList.remove("show");
+        });
+    }
 
     const invoiceDate =
         document.getElementById("invoiceDate");
@@ -28,11 +71,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     invoiceDate.value = `${year}-${month}-${day}`;
 
-
-    // -----------------------------------------
-    // CUSTOMER EDIT
-    // -----------------------------------------
-
     editCustomerBtn.addEventListener("click", () => {
 
         const fields = [
@@ -44,7 +82,6 @@ document.addEventListener("DOMContentLoaded", () => {
         const currentlyReadonly =
             fields[0].hasAttribute("readonly");
 
-
         fields.forEach(field => {
 
             if (currentlyReadonly) {
@@ -55,27 +92,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
         });
 
-
         editCustomerBtn.textContent =
             currentlyReadonly ? "Save" : "Edit";
 
     });
-
-
-    // -----------------------------------------
-    // CURRENCY
-    // -----------------------------------------
 
     function currency(value) {
 
         return "₹" + value.toFixed(2);
 
     }
-
-
-    // -----------------------------------------
-    // CALCULATE ROW
-    // -----------------------------------------
 
     function calculateRow(row) {
 
@@ -84,26 +110,21 @@ document.addEventListener("DOMContentLoaded", () => {
                 row.querySelector(".quantity").value
             ) || 0;
 
-
         const price =
             parseFloat(
                 row.querySelector(".price").value
             ) || 0;
-
 
         const tax =
             parseFloat(
                 row.querySelector(".product-tax").value
             );
 
-
         const amount =
             quantity * price;
 
-
         row.querySelector(".amount").textContent =
             currency(amount);
-
 
         return {
             amount,
@@ -112,42 +133,28 @@ document.addEventListener("DOMContentLoaded", () => {
 
     }
 
-
-    // -----------------------------------------
-    // CALCULATE ALL PRODUCTS
-    // -----------------------------------------
-
     function calculateTotals() {
 
         const rows =
             productTableBody.querySelectorAll(".product-row");
-
 
         let subtotal = 0;
 
         let taxable5 = 0;
         let taxable18 = 0;
 
-
-        // -------------------------------------
-        // SEPARATE PRODUCTS BY TAX SLAB
-        // -------------------------------------
-
         rows.forEach(row => {
 
             const result =
                 calculateRow(row);
 
-
             subtotal += result.amount;
-
 
             if (result.tax === 5) {
 
                 taxable5 += result.amount;
 
             }
-
 
             if (result.tax === 18) {
 
@@ -157,25 +164,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
         });
 
-
-        // -------------------------------------
-        // 5% GST
-        // SGST = 2.5%
-        // CGST = 2.5%
-        // -------------------------------------
-
         const sgst5 =
             taxable5 * 0.025;
 
         const cgst5 =
             taxable5 * 0.025;
-
-
-        // -------------------------------------
-        // 18% GST
-        // SGST = 9%
-        // CGST = 9%
-        // -------------------------------------
 
         const sgst18 =
             taxable18 * 0.09;
@@ -183,57 +176,35 @@ document.addEventListener("DOMContentLoaded", () => {
         const cgst18 =
             taxable18 * 0.09;
 
-
-        // -------------------------------------
-        // TOTAL TAX
-        // -------------------------------------
-
         const totalTax =
             sgst5 +
             cgst5 +
             sgst18 +
             cgst18;
 
-
-        // -------------------------------------
-        // GRAND TOTAL
-        // -------------------------------------
-
         const grandTotal =
             subtotal + totalTax;
-
-
-        // -------------------------------------
-        // UPDATE SCREEN
-        // -------------------------------------
 
         document.getElementById("subtotal")
             .textContent = currency(subtotal);
 
-
         document.getElementById("sgst5")
             .textContent = currency(sgst5);
-
 
         document.getElementById("cgst5")
             .textContent = currency(cgst5);
 
-
         document.getElementById("sgst18")
             .textContent = currency(sgst18);
-
 
         document.getElementById("cgst18")
             .textContent = currency(cgst18);
 
-
         document.getElementById("totalTax")
             .textContent = currency(totalTax);
 
-
         document.getElementById("grandTotal")
             .textContent = currency(grandTotal);
-
 
         return {
             subtotal,
@@ -249,18 +220,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
     }
 
-
-    // -----------------------------------------
-    // ADD PRODUCT
-    // -----------------------------------------
-
     addProductBtn.addEventListener("click", () => {
 
         const row =
             document.createElement("tr");
 
         row.className = "product-row";
-
 
         row.innerHTML = `
 
@@ -349,9 +314,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         `;
 
-
         productTableBody.appendChild(row);
-
 
         attachRowEvents(row);
 
@@ -360,11 +323,6 @@ document.addEventListener("DOMContentLoaded", () => {
         calculateTotals();
 
     });
-
-
-    // -----------------------------------------
-    // REMOVE PRODUCT
-    // -----------------------------------------
 
     productTableBody.addEventListener("click", event => {
 
@@ -379,22 +337,16 @@ document.addEventListener("DOMContentLoaded", () => {
                     ".product-row"
                 );
 
-
             if (rows.length === 1) {
-
-                alert(
+                showNotification(
                     "At least one product is required."
                 );
-
                 return;
-
             }
-
 
             event.target
                 .closest(".product-row")
                 .remove();
-
 
             updateSerialNumbers();
 
@@ -404,18 +356,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
     });
 
-
-    // -----------------------------------------
-    // SERIAL NUMBERS
-    // -----------------------------------------
-
     function updateSerialNumbers() {
 
         const rows =
             productTableBody.querySelectorAll(
                 ".product-row"
             );
-
 
         rows.forEach((row, index) => {
 
@@ -425,11 +371,6 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
     }
-
-
-    // -----------------------------------------
-    // INPUT EVENTS
-    // -----------------------------------------
 
     function attachRowEvents(row) {
 
@@ -442,7 +383,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
         });
 
-
         row.querySelector(".product-tax")
             .addEventListener(
                 "change",
@@ -451,44 +391,39 @@ document.addEventListener("DOMContentLoaded", () => {
 
     }
 
-
-    // -----------------------------------------
-    // GENERATE
-    // -----------------------------------------
-
-    generateInvoiceBtn.addEventListener("click", () => {
+    generateInvoiceBtn.addEventListener("click", async () => {
+        if (!validateInvoice()) {
+            return;
+        }
 
         calculateTotals();
 
-        generateInvoicePDF();
+        try {
+            const generated = await generateInvoicePDF();
 
+            if (generated) {
+                showNotification(
+                    "Your invoice PDF has been generated successfully.",
+                    "success",
+                    "Invoice Generated"
+                );
+            }
+        } catch (error) {
+            console.error("Invoice generation failed:", error);
+            showNotification(
+                "Something went wrong while generating the invoice. Please try again."
+            );
+        }
     });
-
-
-    // -----------------------------------------
-    // INITIALIZE
-    // -----------------------------------------
 
     const firstRow =
         productTableBody.querySelector(".product-row");
-
 
     attachRowEvents(firstRow);
 
     updateSerialNumbers();
 
     calculateTotals();
-
-
-    // =========================================================
-    // FONT LOADING
-    // ---------------------------------------------------------
-    // jsPDF's built-in "helvetica" font has no ₹ (Rupee) glyph,
-    // which is why the amount was rendering as a garbled/
-    // overlapping character. Noto Sans does contain it, so we
-    // fetch it once (cached across multiple "Generate Invoice"
-    // clicks) and register it with jsPDF as a custom font.
-    // =========================================================
 
     let notoFontFilesPromise = null;
 
@@ -576,11 +511,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     }
 
-
-    // -----------------------------------------
-    // NUMBER TO WORDS
-    // -----------------------------------------
-
     function numberToWords(number) {
 
         const ones = [
@@ -595,13 +525,11 @@ document.addEventListener("DOMContentLoaded", () => {
             "Seventy", "Eighty", "Ninety"
         ];
 
-
         function convert(n) {
 
             if (n < 20) {
                 return ones[n];
             }
-
 
             if (n < 100) {
 
@@ -611,7 +539,6 @@ document.addEventListener("DOMContentLoaded", () => {
                         : "");
 
             }
-
 
             if (n < 1000) {
 
@@ -623,7 +550,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
             }
 
-
             if (n < 100000) {
 
                 return convert(Math.floor(n / 1000)) +
@@ -633,7 +559,6 @@ document.addEventListener("DOMContentLoaded", () => {
                         : "");
 
             }
-
 
             if (n < 10000000) {
 
@@ -645,7 +570,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
             }
 
-
             return convert(Math.floor(n / 10000000)) +
                 " Crore" +
                 (n % 10000000 !== 0
@@ -654,32 +578,23 @@ document.addEventListener("DOMContentLoaded", () => {
 
         }
 
-
         if (number === 0) {
             return "Zero";
         }
-
 
         return convert(number);
 
     }
 
-
-    // =========================================================
-    // GENERATE INVOICE PDF
-    // ---------------------------------------------------------
-    // Layout, column widths and row heights below were measured
-    // directly off the reference invoice template (the DOCX /
-    // PDF samples) so the output matches that template as
-    // closely as possible, while still adapting cleanly to any
-    // number of product rows.
-    // =========================================================
-
     async function generateInvoicePDF() {
 
-        if (!window.jspdf) {
-            alert("PDF library load nahi hui. Please refresh the page.");
-            return;
+       if (!window.jspdf) {
+
+            showNotification(
+                "PDF library could not be loaded. Please refresh the page."
+            );
+
+            return false;
         }
 
         const { jsPDF } = window.jspdf;
@@ -693,15 +608,12 @@ document.addEventListener("DOMContentLoaded", () => {
         try {
             await registerInvoiceFont(doc);
         } catch (err) {
-            console.error(err);
-            alert("Could not load the invoice font. Please check your internet connection and try again.");
-            return;
+            showNotification(
+                "Could not load the invoice font. Please check your internet connection and try again."
+            );
+
+            return false;
         }
-
-
-        // =====================================================
-        // TEXT HELPERS
-        // =====================================================
 
         function setFont(style) {
             doc.setFont("NotoSans", style);
@@ -747,11 +659,6 @@ document.addEventListener("DOMContentLoaded", () => {
             doc.line(x, y1, x, y2);
         }
 
-
-        // =====================================================
-        // BASIC DATA
-        // =====================================================
-
         const invoiceNumber =
             document.getElementById("invoiceNumber").value.trim();
 
@@ -767,18 +674,12 @@ document.addEventListener("DOMContentLoaded", () => {
         const customerAddress =
             document.getElementById("customerAddress").value.trim();
 
-
         let invoiceDateStr = "";
 
         if (dateValue) {
             const parts = dateValue.split("-");
             invoiceDateStr = `${parts[2]}-${parts[1]}-${parts[0]}`;
         }
-
-
-        // =====================================================
-        // SELLER
-        // =====================================================
 
         const sellerName = "A.R Creation";
 
@@ -787,11 +688,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const sellerGSTIN =
             "07CZMPA8812R1ZP";
-
-
-        // =====================================================
-        // PRODUCTS
-        // =====================================================
 
         const rows = document.querySelectorAll(".product-row");
 
@@ -835,11 +731,6 @@ document.addEventListener("DOMContentLoaded", () => {
             });
         });
 
-
-        // =====================================================
-        // TAX CALCULATION
-        // =====================================================
-
         let subtotal = 0;
         let taxable5 = 0;
         let taxable18 = 0;
@@ -872,19 +763,12 @@ document.addEventListener("DOMContentLoaded", () => {
         const grandTotal =
             subtotal + totalTax;
 
-
-        // =====================================================
-        // LAYOUT CONSTANTS
-        // =====================================================
-
         const left = 10;
         const right = 200;
         const width = right - left;
         const top = 10;
         const midX = left + width / 2; // 105
 
-
-        // Product table column boundaries
         const colW = {
             sn: 9.8, desc: 80.2, hsn: 17.4,
             qty: 17.6, unit: 13.6, price: 23.2, amount: 28.2
@@ -899,8 +783,6 @@ document.addEventListener("DOMContentLoaded", () => {
         const xAmount = xPrice + colW.price;   // Price / Amount divider
         const xEnd = xAmount + colW.amount;    // = right
 
-
-        // Row heights (mm) - measured off the reference template
         const headerH = 28;
         const infoH = 21;
         const billShipH = 38.95;
@@ -916,7 +798,6 @@ document.addEventListener("DOMContentLoaded", () => {
         const forArH = 20.11;
         const taxTableW = 160;
 
-
         const numTaxLines =
             1 + (taxable18 > 0 ? 2 : 0) + (taxable5 > 0 ? 2 : 0);
 
@@ -928,11 +809,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const addRowH =
             numTaxLines * addLineH + 4;
-
-
-        // =====================================================
-        // Y BOUNDARIES
-        // =====================================================
 
         const yTop = top;
         const yHeaderBot = yTop + headerH;
@@ -948,18 +824,8 @@ document.addEventListener("DOMContentLoaded", () => {
         const yReceiverBot = yWordsBot + receiverH;
         const yForArBot = yReceiverBot + forArH;
 
-
-        // =====================================================
-        // OUTER BOX
-        // =====================================================
-
         doc.setLineWidth(0.4);
         doc.rect(left, yTop, width, yForArBot - yTop);
-
-
-        // =====================================================
-        // HEADER
-        // =====================================================
 
         text(`GSTIN:   ${sellerGSTIN}`, left + 2, yTop + 5, 8, "bold");
         text("Original Copy", right - 2, yTop + 5, 8, "italic", "right");
@@ -978,11 +844,6 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
         hLine(left, right, yHeaderBot);
-
-
-        // =====================================================
-        // INVOICE INFORMATION
-        // =====================================================
 
         vLine(midX, yHeaderBot, yBillBot);
 
@@ -1011,11 +872,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
         hLine(left, right, yInfoBot);
 
-
-        // =====================================================
-        // BILLED TO / SHIPPED TO
-        // =====================================================
-
         const custAddrLines =
             doc.splitTextToSize(customerAddress, midX - left - 4);
 
@@ -1036,11 +892,6 @@ document.addEventListener("DOMContentLoaded", () => {
         text(`GSTIN/UIN: ${customerGSTIN}`, midX + 2, custAddrBot + 2.5, 7, "bold");
 
         hLine(left, right, yBillBot);
-
-
-        // =====================================================
-        // PRODUCT TABLE
-        // =====================================================
 
         [xSN, xDesc, xHsn, xQty, xUnit, xPrice, xAmount, xEnd].forEach(x => {
             vLine(x, yBillBot, yProdBodyBot);
@@ -1078,11 +929,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
         });
 
-
-        // =====================================================
-        // ADD: TAX ROW
-        // =====================================================
-
         vLine(xPrice, yProdBodyBot, yGrandBot);
         hLine(left, right, yProdBodyBot);
 
@@ -1116,11 +962,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
         hLine(left, right, yAddBot);
 
-
-        // =====================================================
-        // GRAND TOTAL
-        // =====================================================
-
         const totalQty =
             products.reduce((sum, product) => sum + product.quantity, 0);
 
@@ -1135,11 +976,6 @@ document.addEventListener("DOMContentLoaded", () => {
         text(`\u20B9 ${grandTotal.toFixed(2)}`, (xPrice + xEnd) / 2, grandMidY, 8, "bold", "center");
 
         hLine(left, right, yGrandBot);
-
-
-        // =====================================================
-        // TAX SUMMARY TABLE
-        // =====================================================
 
         const taxCols = [32, 29.5, 29.5, 32, 37]; // sums to 160
         const taxHeaders = ["Tax Rate", "Taxable Amt", "SGST Amt", "CGST Amt", "Total Tax"];
@@ -1203,11 +1039,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
         });
 
-
-        // =====================================================
-        // AMOUNT IN WORDS
-        // =====================================================
-
         hLine(left, right, yWordsBot);
 
         text(
@@ -1217,11 +1048,6 @@ document.addEventListener("DOMContentLoaded", () => {
             7.5,
             "bold"
         );
-
-
-        // =====================================================
-        // TERMS & RECEIVER SIGNATURE
-        // =====================================================
 
         vLine(midX, yWordsBot, yForArBot);
         hLine(midX, right, yReceiverBot);
@@ -1240,23 +1066,173 @@ document.addEventListener("DOMContentLoaded", () => {
         text(`for ${sellerName}`, right - 2, yReceiverBot + 9, 7.5, "bold", "right");
         text("Authorized Signatory", right - 2, yReceiverBot + 16, 7.5, "bold", "right");
 
-
-        // =====================================================
-        // FOOTER
-        // =====================================================
-
         text("This is a Computer-Generated Invoice.", midX, yForArBot + 6, 7, "normal", "center");
-
-
-        // =====================================================
-        // SAVE
-        // =====================================================
 
         const filename =
             `Invoice-${invoiceNumber || "New"}.pdf`;
 
         doc.save(filename);
+        return true;
 
     }
+
+function validateInvoice() {
+
+    const invoiceNumber =
+        document.getElementById("invoiceNumber")
+            .value
+            .trim();
+
+    const invoiceDate =
+        document.getElementById("invoiceDate")
+            .value;
+
+    const customerName =
+        document.getElementById("customerName")
+            .value
+            .trim();
+
+    const customerGSTIN =
+        document.getElementById("customerGSTIN")
+            .value
+            .trim();
+
+    const customerAddress =
+        document.getElementById("customerAddress")
+            .value
+            .trim();
+
+    if (!invoiceNumber) {
+
+        showNotification(
+            "Please fill in the invoice number."
+        );
+
+        document
+            .getElementById("invoiceNumber")
+            .focus();
+
+        return false;
+    }
+
+    if (!invoiceDate) {
+
+        showNotification(
+            "Please fill in the invoice date."
+        );
+
+        document
+            .getElementById("invoiceDate")
+            .focus();
+
+        return false;
+    }
+
+    if (
+        !customerName ||
+        !customerGSTIN ||
+        !customerAddress
+    ) {
+
+        showNotification(
+            "Please fill in all customer details."
+        );
+
+        return false;
+    }
+
+    const rows =
+        productTableBody.querySelectorAll(
+            ".product-row"
+        );
+
+    if (rows.length === 0) {
+
+        showNotification(
+            "Please add at least one product."
+        );
+
+        return false;
+    }
+
+    for (let i = 0; i < rows.length; i++) {
+
+        const row = rows[i];
+
+        const productName =
+            row.querySelector(".product-name")
+                .value
+                .trim();
+
+        const quantity =
+            parseFloat(
+                row.querySelector(".quantity").value
+            );
+
+        const price =
+            parseFloat(
+                row.querySelector(".price").value
+            );
+
+        const tax =
+            row.querySelector(".product-tax").value;
+
+        if (!productName) {
+
+            showNotification(
+                `Please enter the product name for item ${i + 1}.`
+            );
+
+            row.querySelector(".product-name").focus();
+
+            return false;
+        }
+
+        if (
+            !quantity ||
+            quantity <= 0
+        ) {
+
+            showNotification(
+                `Please enter a valid quantity for item ${i + 1}.`
+            );
+
+            row.querySelector(".quantity").focus();
+
+            return false;
+        }
+
+        if (
+            price === "" ||
+            isNaN(price) ||
+            price <= 0
+        ) {
+
+            showNotification(
+                `Please enter a valid price for item ${i + 1}.`
+            );
+
+            row.querySelector(".price").focus();
+
+            return false;
+        }
+
+        if (
+            tax !== "5" &&
+            tax !== "18"
+        ) {
+
+            showNotification(
+                `Please select a tax rate for item ${i + 1}.`
+            );
+
+            row.querySelector(".product-tax").focus();
+
+            return false;
+        }
+    }
+
+    return true;
+}
 
 });

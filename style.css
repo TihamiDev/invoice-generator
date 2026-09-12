@@ -1,3 +1,155 @@
+/* ================================
+   NOTIFICATION CARD
+================================ */
+
+.notification-card {
+    position: fixed;
+    top: 25px;
+    right: 25px;
+
+    width: min(380px, calc(100vw - 30px));
+
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+
+    padding: 15px 16px;
+
+    background: #ffffff;
+    border: 1px solid #dedede;
+    border-radius: 10px;
+
+    box-shadow:
+        0 10px 30px rgba(0, 0, 0, 0.10);
+
+    z-index: 9999;
+
+    /* Hidden initially */
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-12px);
+
+    transition:
+        opacity 0.25s ease,
+        transform 0.25s ease,
+        visibility 0.25s ease;
+}
+
+
+/* Visible state */
+
+.notification-card.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+
+/* Icon */
+
+.notification-icon {
+    width: 32px;
+    height: 32px;
+
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background: #222;
+    color: white;
+
+    font-size: 15px;
+    font-weight: 700;
+}
+
+
+/* Content */
+
+.notification-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.notification-content strong {
+    display: block;
+
+    margin-bottom: 3px;
+
+    font-size: 14px;
+    font-weight: 700;
+
+    color: #222;
+}
+
+.notification-content p {
+    margin: 0;
+
+    font-size: 13px;
+    line-height: 1.4;
+
+    color: #666;
+}
+
+
+/* Close */
+
+.notification-close {
+    border: none;
+    background: transparent;
+
+    padding: 0;
+
+    color: #888;
+
+    font-size: 21px;
+    line-height: 1;
+
+    cursor: pointer;
+}
+
+.notification-close:hover {
+    color: #222;
+}
+
+
+/* Error */
+
+.notification-card.error {
+    border-color: #e0caca;
+}
+
+.notification-card.error .notification-icon {
+    background: #b42318;
+}
+
+
+/* Success */
+
+.notification-card.success {
+    border-color: #d6d6d6;
+}
+
+.notification-card.success .notification-icon {
+    background: #222;
+}
+
+
+/* Mobile */
+
+@media (max-width: 700px) {
+
+    .notification-card {
+        top: 15px;
+        right: 15px;
+        left: 15px;
+
+        width: auto;
+    }
+}
 * {
     box-sizing: border-box;
     margin: 0;
